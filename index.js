@@ -1,19 +1,20 @@
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
-import router from "./routes/index.js";
-import db from "./db/index.js";
+import { APP_PORT } from "./config";
+import db from "./db";
+import router from "./routes";
+import errorHandler from "./middlewares/errorhandeler";
 const app = express();
-dotenv.config();
-app.use(cors);
+// middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(router
 db.connect();
-app.get("/", (req, res) => {
-  // res.send("ok re vai");
-});
-const PORT = process.env.PORT || 5000;
+app.use("/api", router);
+app.use(errorHandler);
+
+// server
+const PORT = APP_PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server in runing on port ${PORT}`);
 });
