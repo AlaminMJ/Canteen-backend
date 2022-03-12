@@ -1,15 +1,20 @@
 import { jwtVerify } from "../services/jwt";
-
+import { User } from "../models";
 const auth = async (req, res, next) => {
-  let token;
-  if (req.headers.authoraize || req.headers.authoraize.startWith("bareer")) {
-    token = req.headers.authoraize.splite(" ")[1];
-  }
-  if (token) {
-    const data = jwtVerify(token);
-    req.user.id = data._id;
-    next();
-  } else {
-    return next(new Error("unvalid token"));
+  let token = req.headers.authorization;
+
+  const data = await jwtVerify(token);
+  try {
+    const result = await User.findById(data._id);
+    console.log(result._id === req.params.id);
+        if (result._id === req.params.id) {
+      return next();
+    } else {
+      return next(new Error("haha"));
+    }
+  } catch (error) {
+    return next(error);
   }
 };
+
+export default auth;

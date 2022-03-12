@@ -59,4 +59,8 @@ userController.logIn = async (req, res, next) => {
 };
 // logout
 userController.logout = async (req, res, next) => {};
+userController.me = async (req, res, next) => {
+  console.log(req.user);
+  res.send(req.user)
+};
 export default userController;
